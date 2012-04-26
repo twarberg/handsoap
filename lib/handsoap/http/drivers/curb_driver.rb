@@ -22,7 +22,7 @@ module Handsoap
             @curl                 = ::Curl::Easy.new(url)
             @curl.timeout         = Handsoap.timeout
             @curl.enable_cookies  = @enable_cookies
-            
+
             if Handsoap.follow_redirects?
               @curl.follow_location = true
               @curl.max_redirects   = Handsoap.max_redirects
@@ -30,7 +30,7 @@ module Handsoap
           end
           @curl
         end
-        
+
         private :get_curl
 
         def send_http_request(request)
@@ -43,6 +43,8 @@ module Handsoap
           http_client.cert = request.client_cert_file if request.client_cert_file
           # I have submitted a patch for this to curb, but it's not yet supported. If you get errors, try upgrading curb.
           http_client.cert_key = request.client_cert_key_file if request.client_cert_key_file
+          http_client.ssl_verify_peer = request.ssl_verify_peer if request.ssl_verify_peer
+          http_client.ssl_verify_host = request.ssl_verify_host if request.ssl_verify_host
           # pack headers
           headers = request.headers.inject([]) do |arr, (k,v)|
             arr + v.map {|x| "#{k}: #{x}" }
